@@ -47,7 +47,7 @@ const submitToken = async (resultTokens) => {
         params: {
             tokens: tokenString,
             base64_encoded: "false",
-           fields: "stdout,stderr,status_id,status,compile_output,time,memory"
+           fields: "source_code,language_id,stdin,expected_output,stdout,stderr,compile_output,time,memory,status,status_id,created_at,finished_at"
         }
     };
 
@@ -62,12 +62,12 @@ const submitToken = async (resultTokens) => {
 
             const results = response.data.submissions;
 
-            console.log(
-                results.map(r => ({
-                    statusId: r.status_id,
-                    status: r.status.description
-                }))
-            );
+            // console.log(
+            //     results.map(r => ({
+            //         statusId: r.status_id,
+            //         status: r.status.description
+            //     }))
+            // );
 
             const isFinished = results.every(r => r.status_id > 2);
 

@@ -172,3 +172,10 @@ Problem.find().skip(skip).limit(limit);
 
 await Problem.find({difficulty:'easy'});
 
+
+# POPULATE
+
+const  user = await User.findById(userId).populate("problemSolved");
+
+PEHLE USER KO FIND KREGA FIR USER KE ANDER PROBLEM SOLVED JISKO REFER KREGA USKO BHI FETCH KRKE LAYEGA
+

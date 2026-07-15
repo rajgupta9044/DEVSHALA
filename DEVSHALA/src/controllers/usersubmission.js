@@ -128,4 +128,68 @@ const submitCode=async(req,res)=>{
     }
 }
 
-module.exports=submitCode;
+
+const runCode =async(req,res)=>{
+
+    
+    try{
+        const userId=req.result._id;
+        const problemId=req.params.id;
+
+        const {code,language}=req.body;
+
+        if(!userId || !problemId || !code || !language){
+            return res.status(400).send("Some Field Missing");
+        }
+
+
+        //FETCH THE PROBLEM FROM DATABASE
+
+        const  problem =await Problem.findById(problemId);
+        const { visibleTestcases } = problem;
+
+
+        //JUDGE0 KO CODE SUBMIT KREGE
+
+        const languageId=getLanguageById(language);
+
+            const submissions=visibleTestcases.map(testcase=>({
+                source_code:code,
+                language_id:languageId,
+                stdin:testcase.input,
+                expected_output:testcase.output
+            }));
+
+
+            //SUBMIT IT IN BATCH TO JUDGE0
+             //return the tokens 
+
+           const  submitResult =await submitBatch(submissions);
+           
+           if (!submitResult) {
+            return res.status(500).send("Judge0 did not return any response.");
+        }
+
+
+            //EXTRACT AND MAKE A ARRAY OF TOKENS
+           const resultToken =submitResult.map((value)=>value.token);
+
+
+           //EXTRACT THE RESULT
+           const testResult =await submitToken(resultToken);
+
+           res.status(201).send(testResult);
+
+
+
+    }
+
+    catch(err){
+
+        res.status(500).send("Error"+err);
+
+    }
+}
+
+
+module.exports={submitCode,runCode};
