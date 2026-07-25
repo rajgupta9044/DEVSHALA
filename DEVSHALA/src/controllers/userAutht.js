@@ -26,8 +26,20 @@ const register=async(req,res)=>{
         const token=jwt.sign({_id:user._id,emailId:emailId,role:'user'},process.env.JWT_SECRET,{expiresIn:60*60});
 
         res.cookie('token',token,{maxAge:60*60*1000});
+
+          const reply ={
+            firstName:user.firstName,
+            emailId:user.emailId,
+            _id:user._id
+        }
+
+        res.status(201).json({
+            user:reply,
+            message:"User Registered Successfully"
+        })
+
         
-        res.status(201).send("User Registered Successully");
+        // res.status(201).send("User Registered Successully");
 
     }
 
@@ -63,7 +75,22 @@ const login=async(req,res)=>{
         const token=jwt.sign({_id:user._id,emailId:emailId,role:user.role},process.env.JWT_SECRET,{expiresIn:60*60});
 
         res.cookie('token',token,{maxAge:60*60*1000});
-        res.status(200).send("Logged in Successfully");
+        // res.status(200).send("Logged in Successfully");
+
+
+
+        //SENDING THESE INFORMATION TO FRONTEND DURING LOGIN
+
+        const reply ={
+            firstName:user.firstName,
+            emailId:user.emailId,
+            _id:user._id
+        }
+
+        res.status(200).json({
+            user:reply,
+            message:"Login Successfull"
+        })
 
     }
 

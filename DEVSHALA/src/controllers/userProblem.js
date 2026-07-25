@@ -172,7 +172,7 @@ const deleteProblem=async(req,res)=>{
     }
 
     catch(err){
-        res.staus(500).send("Error"+err);
+        res.status(500).send("Error"+err);
     }
 }
 

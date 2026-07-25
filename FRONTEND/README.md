@@ -71,3 +71,18 @@ This aligns items on the Cross Axis.
 flex-col
 Cross Axis is
 Horizontal
+
+# REACT FORMS
+
+
+WITH REACT FORMS
+<input {...register('firstName')} placeholder='Enter Your Name'/>
+
+firstName=key
+value=that we type
+
+WITHOUT  REACT FORMS 
+ <input type="text" name="firstName" value={name} placeholder="Enter Your FirstName" onChange={(e)=>setName(e.target.value)}></input>
+
+ name=key
+ value=value
