@@ -79,14 +79,7 @@ function AdminCreate(){
 
     const navigate = useNavigate();
 
-    const {
-
-        register,
-        control,
-        handleSubmit,
-        formState:{errors}
-
-    } = useForm({
+    const {register,control,handleSubmit,formState:{errors}} = useForm({
 
         resolver:zodResolver(problemSchema),
 
@@ -149,26 +142,13 @@ function AdminCreate(){
 
     });
 
-    const {
-
-        fields:visibleFields,
-        append:appendVisible,
-        remove:removeVisible
-
-    } = useFieldArray({
-
+    const {fields:visibleFields,append:appendVisible,remove:removeVisible} = useFieldArray({
         control,
         name:"visibleTestcases"
 
     });
 
-    const {
-
-        fields:hiddenFields,
-        append:appendHidden,
-        remove:removeHidden
-
-    } = useFieldArray({
+    const {fields:hiddenFields,append:appendHidden, remove:removeHidden} = useFieldArray({
 
         control,
         name:"hiddenTestcases"

@@ -30,7 +30,7 @@ useEffect(() => {
                 "/problem/getAllProblem"
             );
 
-            console.log("Problems:", data);
+            // console.log("Problems:", data);
 
             setProblems(data);
 
@@ -48,7 +48,7 @@ useEffect(() => {
                 "/problem/problemSolvedByUser"
             );
 
-            console.log("Solved Problems:", data);
+            // console.log("Solved Problems:", data);
 
             setSolvedProblems(data);
 
@@ -131,8 +131,6 @@ const filteredProblems = problems.filter((problem) => {
 
 
 
-
-
 if (loading) {
   return (
     <div className="min-h-screen flex justify-center items-center">
@@ -159,31 +157,36 @@ if (loading) {
 
         </div>
 
-  <div className="flex items-center gap-4">
+      <div className="dropdown dropdown-end">
 
-    <span className="font-medium text-gray-700">
-      Welcome, {user?.firstName || "User"}
-    </span>
+        <div
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost normal-case"
+        >
+          Welcome, {user?.firstName || "User"} ▼
+        </div>
 
-    {/* Show only for Admin */}
-    {user?.role === "admin" && (
-      <button
-        onClick={() => navigate("/admin")}
-        className="btn btn-sm bg-green-600 hover:bg-green-700 text-white border-none"
-      >
-        Admin Panel
-      </button>
-    )}
+        <ul
+          tabIndex={0}
+          className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-2"
+        >
+          {user?.role === "admin" && (
+            <li>
+              <button onClick={() => navigate("/admin")}>
+                Admin Panel
+              </button>
+            </li>
+          )}
+          <li>
+            <button onClick={() => dispatch(logoutUser())}>
+              <LogOut size={16} />
+              Logout
+            </button>
+          </li>
 
-    <button
-      onClick={() => dispatch(logoutUser())}
-      className="btn btn-sm bg-violet-600 hover:bg-violet-700 text-white border-none"
-    >
-      <LogOut size={18} />
-      Logout
-    </button>
-
-  </div>
+        </ul>
+      </div>
 
       </nav>
 
@@ -320,9 +323,12 @@ if (loading) {
             </div>
           </div>
 
-          <button className="btn bg-violet-600 hover:bg-violet-700 text-white border-none">
-            Solve
-          </button>
+        <button
+          onClick={() => navigate(`/problem/${problem._id}`)}
+          className="btn bg-violet-600 hover:bg-violet-700 text-white border-none"
+        >
+          Solve
+        </button>
         </div>
       </div>
     ))

@@ -39,7 +39,6 @@ const AdminDelete = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">

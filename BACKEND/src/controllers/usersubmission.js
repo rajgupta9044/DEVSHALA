@@ -113,9 +113,16 @@ const submitCode=async(req,res)=>{
             await req.result.save();
            }
 
+            res.status(200).send({
+            accepted: submittedResult.status === "accepted",
+            runtime: submittedResult.runtime,
+            memory: submittedResult.memory,
+            passedTestCases: submittedResult.testCasesPassed,
+            totalTestCases: submittedResult.testCasesTotal,
+            error: submittedResult.errorMessage
+        });
 
-
-           res.status(201).send(submittedResult);
+            
 
 
 
@@ -178,8 +185,29 @@ const runCode =async(req,res)=>{
            //EXTRACT THE RESULT
            const testResult =await submitToken(resultToken);
 
-           res.status(201).send(testResult);
+           // Calculate overall result
+                let runtime = 0;
+                let memory = 0;
+                let success = true;
 
+                for (const test of testResult) {
+
+                    if (test.status_id !== 3) {
+                        success = false;
+                    }
+
+                    runtime += parseFloat(test.time || 0);
+
+                    memory = Math.max(memory, test.memory || 0);
+                }
+
+                // Return the format expected by frontend
+                res.status(200).send({
+                    success,
+                    runtime,
+                    memory,
+                    testCases: testResult
+                });
 
 
     }
