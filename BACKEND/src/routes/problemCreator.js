@@ -6,15 +6,15 @@ const userMiddleware=require('../middleware/usermiddleware.');
 
 
 
+
+
+
 //CREATE 
 
 problemRouter.post("/create",adminMiddleware,createProblem); //ADMIN 
 
 
-
 //FETCH
-
-
 
 problemRouter.get("/problemSolvedByUser",userMiddleware,SolvedAllProblemByUser);
 problemRouter.get("/getAllProblem",userMiddleware,getAllProblem);

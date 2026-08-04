@@ -34,6 +34,18 @@ function Admin() {
       route: '/admin/delete'
     },
 
+      {
+      id: 'video',
+      title: 'Editorial Video',
+      description: 'Upload and Delete Videos',
+      icon: Video,
+      color: 'btn-error',
+      bgColor: 'bg-error/10',
+      route: '/admin/video'
+    },
+
+
+
   ];
 
   return (

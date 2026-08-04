@@ -1,4 +1,4 @@
-import { Search, LogOut, Code2 } from "lucide-react";
+import { Search, LogOut, Code2 ,Play, Zap,Tag, CircleCheckBig,CircleX} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../authSlice";
 import { useState, useEffect } from "react";
@@ -48,7 +48,7 @@ useEffect(() => {
                 "/problem/problemSolvedByUser"
             );
 
-            // console.log("Solved Problems:", data);
+            console.log("Solved Problems:", data);
 
             setSolvedProblems(data);
 
@@ -95,7 +95,7 @@ const getDifficultyColor = (difficulty) => {
 }
 
 const solvedProblemIds = new Set(
-  solvedProblems.map((problem) => problem.problemId)
+  solvedProblems.map((problem) => problem._id)
 );
 
 
@@ -169,7 +169,7 @@ if (loading) {
 
         <ul
           tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-2"
+          className="dropdown-content z-1 menu p-2 shadow bg-base-100 rounded-box w-52 mt-2"
         >
           {user?.role === "admin" && (
             <li>
@@ -215,8 +215,8 @@ if (loading) {
           <div className="relative">
 
             <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              size={20}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-black z-20"
+              size={22}
             />
 
             <input
@@ -286,50 +286,60 @@ if (loading) {
         key={problem._id}
         className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition"
       >
-        <div className="flex justify-between items-start">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800">
-              {problem.title}
-            </h3>
+<div className="flex justify-between items-center">
+  <div>
+    <h3 className="text-2xl font-bold text-gray-900">
+      {problem.title}
+    </h3>
 
-            <div className="flex gap-2 mt-3 flex-wrap">
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
-                  problem.difficulty
-                )}`}
-              >
-                 {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
-              </span>
+    <div className="flex flex-wrap items-center gap-3 mt-4">
 
-             {problem.tags?.map((tag) => (
-            <span
-                key={tag}
-                className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-sm"
-            >
-                {tag}
-            </span>
-            ))}
+      {/* Difficulty */}
+      <span
+        className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold ${getDifficultyColor(
+          problem.difficulty
+        )}`}
+      >
+        <Zap size={14} />
+        {problem.difficulty.charAt(0).toUpperCase() +
+          problem.difficulty.slice(1)}
+      </span>
 
-            {solvedProblemIds.has(problem._id) ? (
-            <span className="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700">
-                Solved
-            </span>
-            ) : (
-            <span className="px-3 py-1 rounded-full text-sm bg-red-100 text-red-700">
-                Unsolved
-            </span>
-            )}
-
-            </div>
-          </div>
-
-        <button
-          onClick={() => navigate(`/problem/${problem._id}`)}
-          className="btn bg-violet-600 hover:bg-violet-700 text-white border-none"
+      {/* Tags */}
+      {problem.tags?.map((tag) => (
+        <span
+          key={tag}
+          className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-violet-100 text-violet-700 text-sm font-medium"
         >
-          Solve
-        </button>
-        </div>
+          <Tag size={13} />
+          {tag}
+        </span>
+      ))}
+
+      {/* Status */}
+      {solvedProblemIds.has(problem._id) ? (
+        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-green-100 text-green-700 text-sm font-medium">
+          <CircleCheckBig size={14} />
+          Solved
+        </span>
+      ) : (
+        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-100 text-red-700 text-sm font-medium">
+          <CircleX size={14} />
+          Unsolved
+        </span>
+      )}
+
+    </div>
+  </div>
+
+  <button
+    onClick={() => navigate(`/problem/${problem._id}`)}
+    className="flex items-center gap-2 bg-linear-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold px-7 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+  >
+    <Play size={16} fill="white" />
+    Solve
+  </button>
+</div>
       </div>
     ))
   )}

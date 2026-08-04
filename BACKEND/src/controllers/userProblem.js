@@ -2,6 +2,7 @@ const {getLanguageById,submitBatch,submitToken}=require('../utils/problemutility
 const Problem =require('../models/problem');
 const User =require('../models/user');
 const Submission=require('../models/submissions');
+const SolutionVideo =require('../models/solutionVideo');
 
 
 const createProblem=async (req,res)=>{
@@ -192,8 +193,22 @@ const getProblemById=async(req,res)=>{
         if(!getProblem)
         return res.status(404).send("Problem is missing");
 
-        return res.status(200).send(getProblem);
+          //video ka url bhi send krdo
+
+        const videos=await SolutionVideo.find({problemId:id}) ;
+
+        if(videos){   
+    
+        const responseData = {
+            ...getProblem.toObject(),
+            secureUrl:videos.secureUrl,
+            thumbnailUrl : videos.thumbnailUrl,
+            duration : videos.duration,
+        } 
+
+        return res.status(200).send(responseData);
 }
+    }
 
     catch(err){
         res.status(500).send("Error:"+err);
@@ -254,7 +269,7 @@ const submittedProblem=async(req,res)=>{
        const ans=await Submission.find({userId,problemId});
 
        if(ans.length==0){
-        res.status(200).send("No submission");
+        res.status(200).send([]);
        }
 
        res.status(200).send(ans);
@@ -264,7 +279,7 @@ const submittedProblem=async(req,res)=>{
     catch(err){
         res.status(500).send("Internal Server Error");
     }
-}
+};
 
 
 

@@ -9,6 +9,10 @@ import { useEffect } from "react";
 import AdminCreate from "./components/AdminCreate";
 import AdminDelete from "./components/AdminDelete";
 import ProblemPage from  "./pages/ProblemPage";
+import AdminVideo from './components/Adminvideo';
+import AdminUpload from './components/adminupload'
+import AdminUpdate from './components/Adminupdate';
+import ProblemUpdate from './components/problemUpdate';
 
 
 function App(){
@@ -53,7 +57,11 @@ if (loading) {
 <Route path="/admin" element={ isAuthenticated && user?.role==='admin' ?<Admin/> : <Navigate to="/"></Navigate>}/>
 <Route path="/admin/create" element={ isAuthenticated && user?.role === "admin"? <AdminCreate />: <Navigate to="/" />}/>
 <Route path="/admin/delete" element={isAuthenticated && user?.role === 'admin' ? <AdminDelete /> : <Navigate to="/" />} />
-<Route path="/problem/:problemId" element={<ProblemPage/>}></Route>
+<Route path="/admin/update" element={isAuthenticated && user?.role === 'admin' ? <AdminUpdate /> : <Navigate to="/" />} />
+<Route path="/admin/video" element={isAuthenticated && user?.role === 'admin' ? <AdminVideo /> : <Navigate to="/" />} />
+<Route path="/problem/:problemId" element={isAuthenticated ? <ProblemPage/> :<Navigate to="/login"></Navigate>}></Route>
+<Route path="/admin/upload/:problemId" element={isAuthenticated && user?.role === 'admin' ? <AdminUpload /> : <Navigate to="/" />} />
+<Route path="/admin/update/:problemId" element={isAuthenticated && user?.role === 'admin' ? <ProblemUpdate /> : <Navigate to="/" />} />
 
 </Routes>
 

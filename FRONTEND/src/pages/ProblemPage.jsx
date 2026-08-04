@@ -4,6 +4,9 @@ import Editor from '@monaco-editor/react';
 import { useParams } from 'react-router-dom';
 import axiosClient from "../utils/axiosClient"
 import SubmissionHistory from "../components/SubmissionHistory";
+import ChatAI from "../components/ChatAi"
+import { ChevronDown, Code2 } from "lucide-react";
+import Editorial from "../components/Editorial";
 
 const ProblemPage = () => {
   const [problem, setProblem] = useState(null);
@@ -24,7 +27,7 @@ const ProblemPage = () => {
       setLoading(true);
       try {
         const response = await axiosClient.get(`/problem/problemById/${problemId}`);
-        console.log(response.data);
+        // console.log(response.data);
        const codeObj = response.data.startCode.find(
         sc => sc.language === selectedLanguage
         );
@@ -181,8 +184,8 @@ const getLanguageForMonaco = (lang) => {
           </button>
 
           <button 
-            className={`tab ${activeLeftTab === 'chatAI' ? 'tab-active' : ''}`}
-            onClick={() => setActiveLeftTab('chatAI')}
+            className={`tab ${activeLeftTab === 'ChatAI' ? 'tab-active' : ''}`}
+            onClick={() => setActiveLeftTab('ChatAI')}
           >
             ChatAI
           </button>
@@ -232,7 +235,7 @@ const getLanguageForMonaco = (lang) => {
                 <div className="prose max-w-none">
                   <h2 className="text-xl font-bold mb-4">Editorial</h2>
                   <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                    <Editorial secureUrl={problem.secureUrl} thumbnailUrl={problem.thumbnailUrl} duration={problem.duration}/>
+                   <Editorial secureUrl={problem.secureUrl} thumbnailUrl={problem.thumbnailUrl} duration={problem.duration}/>
                   </div>
                 </div>
               )}
@@ -266,14 +269,14 @@ const getLanguageForMonaco = (lang) => {
                 </div>
               )}
 
-              {/* {activeLeftTab === 'chatAI' && (
+              {activeLeftTab === 'ChatAI' && (
                 <div className="prose max-w-none">
                   <h2 className="text-xl font-bold mb-4">CHAT with AI</h2>
                   <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                    <ChatAi problem={problem}></ChatAi>
+                   <ChatAI problem={problem}></ChatAI>
                   </div>
                 </div>
-              )} */}
+              )}
             </>
           )}
         </div>
@@ -307,29 +310,50 @@ const getLanguageForMonaco = (lang) => {
         <div className="flex-1 flex flex-col">
           {activeRightTab === 'code' && (
             <div className="flex-1 flex flex-col">
-              {/* Language Selector */}
-              <div className="flex justify-between items-center p-4 border-b border-base-300">
-               <div className="dropdown">
-                <div tabIndex={0} role="button" className="btn btn-outline">
-                    {selectedLanguage} ▼
-                </div>
 
-                <ul
-                    tabIndex={0}
-                    className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow"
-                >
-                    <li>
-                    <a onClick={() => setSelectedLanguage("python")}>Python</a>
-                    </li>
-                    <li>
-                    <a onClick={() => setSelectedLanguage("java")}>Java</a>
-                    </li>
-                    <li>
-                    <a onClick={() => setSelectedLanguage("c++")}>C++</a>
-                    </li>
-                </ul>
-                </div>
-              </div>
+
+              {/* Language Selector */}
+<div className="flex justify-between items-center p-4 border-b border-gray-200 bg-gray-50">
+
+  <div className="dropdown">
+    <div
+      tabIndex={0}
+      role="button"
+      className="flex items-center gap-2 bg-white border border-gray-200 hover:border-violet-500 rounded-xl px-4 py-2 shadow-sm hover:shadow-md cursor-pointer transition-all duration-200"
+    >
+      <Code2 size={18} className="text-violet-600" />
+
+      <span className="font-medium capitalize text-gray-700">
+        {selectedLanguage}
+      </span>
+
+      <ChevronDown
+        size={18}
+        className="text-gray-500 ml-1"
+      />
+    </div>
+
+    <ul
+      tabIndex={0}
+      className="dropdown-content z-50 mt-3 w-56 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden"
+    >
+      {["python", "java", "c++"].map((lang) => (
+        <li
+          key={lang}
+          onClick={() => setSelectedLanguage(lang)}
+          className={`px-4 py-3 cursor-pointer transition-all duration-200 hover:bg-violet-50 hover:text-violet-600 ${
+            selectedLanguage === lang
+              ? "bg-violet-100 text-violet-700 font-semibold"
+              : ""
+          }`}
+        >
+          {lang.charAt(0).toUpperCase() + lang.slice(1)}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+</div>
 
               {/* Monaco Editor */}
               <div className="flex-1">

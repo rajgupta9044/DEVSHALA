@@ -97,7 +97,9 @@ const login=async(req,res)=>{
     }
 
     catch(err){
-        res.status(401).send("Error:"+ err);
+          res.status(401).json({
+            message: err.message
+    });
     }
 
 }

@@ -117,7 +117,11 @@ function Login(){
 
             </div>
 
-           
+            {error && (
+            <p className="text-red-500 text-sm text-center mb-2">
+                {error}
+            </p>
+            )}
 
             <button
                 type="submit"
