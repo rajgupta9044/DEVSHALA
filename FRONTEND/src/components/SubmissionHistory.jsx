@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axiosClient from '../utils/axiosClient';
-
+import {CheckCircle,XCircle,Clock3,AlertTriangle} from "lucide-react";
 
 const SubmissionHistory = ({ problemId }) => {
   const [submissions, setSubmissions] = useState([]);
@@ -67,120 +67,283 @@ const SubmissionHistory = ({ problemId }) => {
     );
   }
 
-  return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6 text-center">Submission History</h2>
-      
-      {submissions.length === 0 ? (
-        <div className="alert alert-info shadow-lg">
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <span>No submissions found for this problem</span>
-          </div>
-        </div>
-      ) : (
-        <>
-          <div className="overflow-x-auto">
-            <table className="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Language</th>
-                  <th>Status</th>
-                  <th>Runtime</th>
-                  <th>Memory</th>
-                  <th>Test Cases</th>
-                  <th>Submitted</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {submissions.map((sub, index) => (
-                  <tr key={sub._id}>
-                    <td>{index + 1}</td>
-                    <td className="font-mono">{sub.language}</td>
-                    <td>
-                      <span className={`badge ${getStatusColor(sub.status)}`}>
-                        {sub.status.charAt(0).toUpperCase() + sub.status.slice(1)}
-                      </span>
-                    </td>
-                    
-                    <td className="font-mono">{sub.runtime}sec</td>
-                    <td className="font-mono">{formatMemory(sub.memory)}</td>
-                    <td className="font-mono">{sub.testCasesPassed}/{sub.testCasesTotal}</td>
-                    <td>{formatDate(sub.createdAt)}</td>
-                    <td>
-                      <button 
-                        className="btn btn-s btn-outline"
-                        onClick={() => setSelectedSubmission(sub)}
-                      >
-                        Code
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+return (
+  <div className="max-w-5xl mx-auto p-6">
 
-          <p className="mt-4 text-sm text-gray-500">
-            Showing {submissions.length} submissions
-          </p>
-        </>
-      )}
+    {/* Header */}
+<div className="bg-white rounded-2xl shadow-md p-6 mb-8">
+  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-      {/* Code View Modal */}
-      {selectedSubmission && (
-        <div className="modal modal-open">
-          <div className="modal-box w-11/12 max-w-5xl">
-            <h3 className="font-bold text-lg mb-4">
-              Submission Details: {selectedSubmission.language}
-            </h3>
-            
-            <div className="mb-4">
-              <div className="flex flex-wrap gap-2 mb-2">
-                <span className={`badge ${getStatusColor(selectedSubmission.status)}`}>
-                  {selectedSubmission.status}
-                </span>
-                <span className="badge badge-outline">
-                  Runtime: {selectedSubmission.runtime}s
-                </span>
-                <span className="badge badge-outline">
-                  Memory: {formatMemory(selectedSubmission.memory)}
-                </span>
-                <span className="badge badge-outline">
-                  Passed: {selectedSubmission.testCasesPassed}/{selectedSubmission.testCasesTotal}
-                </span>
-              </div>
-              
-              {selectedSubmission.errorMessage && (
-                <div className="alert alert-error mt-2">
-                  <div>
-                    <span>{selectedSubmission.errorMessage}</span>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            <pre className="p-4 bg-gray-900 text-gray-100 rounded overflow-x-auto">
-              <code>{selectedSubmission.code}</code>
-            </pre>
-            
-            <div className="modal-action">
-              <button 
-                className="btn"
-                onClick={() => setSelectedSubmission(null)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    <div>
+      <h2 className="text-3xl font-bold text-gray-800">
+        Submission History
+      </h2>
+
+      <p className="text-gray-500 mt-2">
+        Review all of your submissions for this problem.
+      </p>,
     </div>
-  );
+
+<div className="flex items-center gap-3">
+
+  <div className="px-4 py-2 rounded-full border border-gray-300 text-gray-700 font-medium whitespace-nowrap">
+    {submissions.length} Submission{submissions.length !== 1 ? "s" : ""}
+  </div>
+
+  {submissions.length > 0 && (
+    <div className="px-4 py-2 rounded-full bg-green-100 text-green-700 font-medium whitespace-nowrap">
+      Latest:{" "}
+      {submissions[submissions.length - 1].status.charAt(0).toUpperCase() +
+        submissions[submissions.length - 1].status.slice(1)}
+    </div>
+  )}
+
+</div>
+
+  </div>
+</div>
+
+    {/* Loading */}
+
+    {loading && (
+      <div className="flex justify-center py-20">
+        <span className="loading loading-spinner loading-lg text-violet-600"></span>
+      </div>
+    )}
+
+    {/* Error */}
+
+    {!loading && error && (
+      <div className="alert alert-error">
+        {error}
+      </div>
+    )}
+
+    {/* Empty */}
+
+    {!loading && !error && submissions.length === 0 && (
+      <div className="bg-white rounded-xl shadow-md p-12 text-center">
+        <h2 className="text-xl font-semibold">
+          No submissions yet
+        </h2>
+
+        <p className="text-gray-500 mt-2">
+          Solve this problem to see your submissions.
+        </p>
+      </div>
+    )}
+
+    {/* Cards */}
+
+    {!loading && !error && submissions.length > 0 && (
+
+      <div className="space-y-5">
+
+        {[...submissions].reverse().map((sub, index) => (
+
+          <div
+            key={sub._id}
+            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 p-6"
+          >
+
+            <div className="flex justify-between items-start">
+
+              <div>
+
+                <h2 className="font-bold text-xl">
+                  Submission #{submissions.length - index}
+                </h2>
+
+                <p className="text-gray-500 mt-1">
+                  {formatDate(sub.createdAt)}
+                </p>
+
+              </div>
+
+              <span
+                className={`badge badge-lg ${getStatusColor(sub.status)}`}
+              >
+                {sub.status.charAt(0).toUpperCase() +
+                  sub.status.slice(1)}
+              </span>
+
+            </div>
+
+            <div className="grid md:grid-cols-4 grid-cols-2 gap-6 mt-6">
+
+              <div>
+
+                <p className="text-gray-400 text-sm">
+                  Language
+                </p>
+
+                <h3 className="font-semibold">
+                  {sub.language.toUpperCase()}
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p className="text-gray-400 text-sm">
+                  Runtime
+                </p>
+
+                <h3 className="font-semibold">
+                  {sub.runtime} sec
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p className="text-gray-400 text-sm">
+                  Memory
+                </p>
+
+                <h3 className="font-semibold">
+                  {formatMemory(sub.memory)}
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p className="text-gray-400 text-sm">
+                  Test Cases
+                </p>
+
+                <h3 className="font-semibold">
+                  {sub.testCasesPassed}/{sub.testCasesTotal}
+                </h3>
+
+              </div>
+
+            </div>
+
+            {sub.errorMessage && (
+
+              <div className="mt-5 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600">
+
+                {sub.errorMessage}
+
+              </div>
+
+            )}
+
+            <div className="flex justify-end mt-6">
+
+              <button
+                onClick={() => setSelectedSubmission(sub)}
+                className="btn bg-violet-600 hover:bg-violet-700 border-none text-white rounded-xl px-6"
+              >
+                View Code
+              </button>
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    )}
+
+    {/* Modal */}
+
+    {selectedSubmission && (
+
+      <div className="modal modal-open">
+
+        <div className="modal-box w-11/12 max-w-6xl">
+
+          <div className="flex justify-between items-center mb-5">
+
+            <h2 className="font-bold text-2xl">
+              {selectedSubmission.language.toUpperCase()} Submission
+            </h2>
+
+            <span
+              className={`badge badge-lg ${getStatusColor(
+                selectedSubmission.status
+              )}`}
+            >
+              {selectedSubmission.status}
+            </span>
+
+          </div>
+
+          <div className="grid grid-cols-3 gap-4 mb-6">
+
+            <div className="bg-base-200 rounded-xl p-3">
+              <p className="text-gray-500 text-sm">
+                Runtime
+              </p>
+
+              <h3 className="font-semibold">
+                {selectedSubmission.runtime} sec
+              </h3>
+            </div>
+
+            <div className="bg-base-200 rounded-xl p-3">
+              <p className="text-gray-500 text-sm">
+                Memory
+              </p>
+
+              <h3 className="font-semibold">
+                {formatMemory(selectedSubmission.memory)}
+              </h3>
+            </div>
+
+            <div className="bg-base-200 rounded-xl p-3">
+              <p className="text-gray-500 text-sm">
+                Passed
+              </p>
+
+              <h3 className="font-semibold">
+                {selectedSubmission.testCasesPassed}/
+                {selectedSubmission.testCasesTotal}
+              </h3>
+            </div>
+
+          </div>
+
+          <div className="rounded-xl overflow-hidden border">
+
+            <div className="bg-[#2d2d2d] text-white px-4 py-3">
+
+              {selectedSubmission.language.toUpperCase()}
+
+            </div>
+
+            <pre className="bg-[#1e1e1e] text-gray-100 p-5 overflow-auto max-h-125">
+
+              <code>{selectedSubmission.code}</code>
+
+            </pre>
+
+          </div>
+
+          <div className="modal-action">
+
+            <button
+              className="btn"
+              onClick={() => setSelectedSubmission(null)}
+            >
+              Close
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    )}
+
+  </div>
+);
 };
 
 export default SubmissionHistory;

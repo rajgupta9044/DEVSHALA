@@ -14,6 +14,14 @@ const problemSchema= new Schema({
         required:true
     },
 
+    
+    constraints: [
+    {
+        type: String,
+        required: true
+    }
+],
+
     difficulty:{
         type:String,
         enum:['easy','medium','hard']

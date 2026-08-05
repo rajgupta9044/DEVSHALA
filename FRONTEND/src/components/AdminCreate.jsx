@@ -8,6 +8,10 @@ const problemSchema = z.object({
 
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
+  constraints: z.array(
+  z.string().min(1, "Constraint cannot be empty")
+).min(1, "At least one constraint is required"),
+
   difficulty: z.enum([
     "easy",
     "medium",
@@ -89,6 +93,8 @@ function AdminCreate(){
 
             description:"",
 
+            constraints:[""],
+
             difficulty:"easy",
 
             tags:"Array",
@@ -154,6 +160,11 @@ function AdminCreate(){
         name:"hiddenTestcases"
 
     });
+
+    const {fields: constraintFields,append: appendConstraint,remove: removeConstraint,} = useFieldArray({
+    control,
+    name: "constraints",
+});
 
     const onSubmit = async(data)=>{
 
@@ -245,6 +256,58 @@ function AdminCreate(){
         </div>
       </div>
 
+      {/* Constraints */}
+
+<div className="card bg-base-100 shadow-lg p-6">
+
+    <div className="flex justify-between items-center mb-5">
+        <h2 className="text-xl font-semibold">
+            Constraints
+        </h2>
+
+        <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => appendConstraint("")}
+        >
+            Add Constraint
+        </button>
+
+    </div>
+
+    {constraintFields.map((field,index)=>(
+
+        <div
+            key={field.id}
+            className="flex gap-3 mb-3"
+        >
+
+            <input
+                {...register(`constraints.${index}`)}
+                className="input input-bordered w-full"
+                placeholder={`Constraint ${index+1}`}
+            />
+
+            <button
+                type="button"
+                className="btn btn-error btn-sm"
+                onClick={()=>removeConstraint(index)}
+            >
+                Remove
+            </button>
+
+        </div>
+
+    ))}
+
+    {errors.constraints && (
+        <p className="text-error">
+            {errors.constraints.message}
+        </p>
+    )}
+
+</div>
+
 {/* Test Cases */}
 <div className="card bg-base-100 shadow-lg p-6">
   <h2 className="text-xl font-semibold mb-4">Test Cases</h2>
@@ -284,11 +347,15 @@ function AdminCreate(){
           </button>
         </div>
 
-        <input
-          {...register(`visibleTestcases.${index}.input`)}
-          placeholder="Input"
-          className="input input-bordered w-full"
-        />
+      <textarea
+        {...register(`visibleTestcases.${index}.input`)}
+        rows={4}
+        placeholder={`Example:
+      4
+      2 7 11 15
+      9`}
+        className="textarea textarea-bordered w-full font-mono"
+      />
 
         <input
           {...register(`visibleTestcases.${index}.output`)}
@@ -340,10 +407,14 @@ function AdminCreate(){
           </button>
         </div>
 
-        <input
+        <textarea
           {...register(`hiddenTestcases.${index}.input`)}
-          placeholder="Input"
-          className="input input-bordered w-full"
+          rows={4}
+          placeholder={`Example:
+        4
+        2 7 11 15
+        9`}
+          className="textarea textarea-bordered w-full font-mono"
         />
 
         <input

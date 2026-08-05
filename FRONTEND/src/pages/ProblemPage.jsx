@@ -7,6 +7,7 @@ import SubmissionHistory from "../components/SubmissionHistory";
 import ChatAI from "../components/ChatAi"
 import { ChevronDown, Code2 } from "lucide-react";
 import Editorial from "../components/Editorial";
+import Solutions from "../components/Solution"
 
 const ProblemPage = () => {
   const [problem, setProblem] = useState(null);
@@ -152,6 +153,28 @@ const getLanguageForMonaco = (lang) => {
     );
   }
 
+
+  const formatInput = (input) => {
+  if (!input) return "";
+
+  const lines = input.trim().split("\n");
+
+  // One line only
+  if (lines.length === 1) return lines[0];
+
+  // First line = n, second line = array
+  if (lines.length === 2) {
+    return `n = ${lines[0]}, nums = [${lines[1]
+      .trim()
+      .split(/\s+/)
+      .join(", ")}]`;
+  }
+
+  // More than 2 lines
+  return lines.join(" | ");
+};
+
+
   return (
     <div className="h-screen flex bg-base-100">
       {/* Left Panel */}
@@ -213,21 +236,69 @@ const getLanguageForMonaco = (lang) => {
                     </div>
                   </div>
 
+                  {/* Constraints */}
+                {problem.constraints && problem.constraints.length > 0 && (
                   <div className="mt-8">
-                    <h3 className="text-lg font-semibold mb-4">Examples:</h3>
-                    <div className="space-y-4">
-                      {problem.visibleTestcases.map((example, index) => (
-                        <div key={index} className="bg-base-200 p-4 rounded-lg">
-                          <h4 className="font-semibold mb-2">Example {index + 1}:</h4>
-                          <div className="space-y-2 text-sm font-mono">
-                            <div><strong>Input:</strong> {example.input}</div>
-                            <div><strong>Output:</strong> {example.output}</div>
-                            <div><strong>Explanation:</strong> {example.explanation}</div>
-                          </div>
-                        </div>
-                      ))}
+                    <h3 className="text-lg font-semibold mb-4">
+                      Constraints
+                    </h3>
+
+                    <div className="bg-base-200 rounded-lg p-4">
+                      <ul className="list-disc list-inside space-y-2">
+                        {problem.constraints.map((constraint, index) => (
+                          <li
+                            key={index}
+                            className="font-mono text-sm"
+                          >
+                            {constraint}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
+                )}
+
+<div className="mt-8">
+  <h3 className="text-lg font-semibold mb-4">Examples</h3>
+
+  <div className="space-y-6">
+    {problem.visibleTestcases.map((example, index) => (
+      <div
+        key={index}
+        className="bg-base-200 rounded-xl p-5 border border-base-300"
+      >
+        <h4 className="text-lg font-semibold mb-4">
+          Example {index + 1}
+        </h4>
+
+        <div className="space-y-4">
+
+          <div>
+            <h5 className="font-semibold mb-1">Input</h5>
+            <pre className="bg-base-100 border border-base-300 rounded-lg p-3 font-mono text-sm whitespace-pre-wrap">
+{example.input}
+            </pre>
+          </div>
+
+          <div>
+            <h5 className="font-semibold mb-1">Output</h5>
+            <pre className="bg-base-100 border border-base-300 rounded-lg p-3 font-mono text-sm whitespace-pre-wrap">
+{example.output}
+            </pre>
+          </div>
+
+          <div>
+            <h5 className="font-semibold mb-1">Explanation</h5>
+            <p className="text-sm leading-6">
+              {example.explanation}
+            </p>
+          </div>
+
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
                 </div>
               )}
 
@@ -240,25 +311,12 @@ const getLanguageForMonaco = (lang) => {
                 </div>
               )}
 
-              {activeLeftTab === 'solutions' && (
-                <div>
-                  <h2 className="text-xl font-bold mb-4">Solutions</h2>
-                  <div className="space-y-6">
-                    {problem.referenceSolution?.map((solution, index) => (
-                      <div key={index} className="border border-base-300 rounded-lg">
-                        <div className="bg-base-200 px-4 py-2 rounded-t-lg">
-                          <h3 className="font-semibold">{problem?.title} - {solution?.language}</h3>
-                        </div>
-                        <div className="p-4">
-                          <pre className="bg-base-300 p-4 rounded text-sm overflow-x-auto">
-                            <code>{solution?.completeCode}</code>
-                          </pre>
-                        </div>
-                      </div>
-                    )) || <p className="text-gray-500">Solutions will be available after you solve the problem.</p>}
-                  </div>
-                </div>
-              )}
+        {activeLeftTab === "solutions" && (
+            <Solutions
+                title={problem.title}
+                solutions={problem.referenceSolution}
+            />
+        )}
 
               {activeLeftTab === 'submissions' && (
                 <div>

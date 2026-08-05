@@ -178,43 +178,39 @@ const deleteProblem=async(req,res)=>{
 }
 
 
-const getProblemById=async(req,res)=>{
+const getProblemById = async (req, res) => {
+    const { id } = req.params;
 
-    const {id}=req.params;
+    try {
 
-    try{
-
-        if(!id){
+        if (!id) {
             return res.status(400).send("Id is Missing");
         }
 
-        const getProblem=await Problem.findById(id);
+        const getProblem = await Problem.findById(id);
 
-        if(!getProblem)
-        return res.status(404).send("Problem is missing");
+        if (!getProblem) {
+            return res.status(404).send("Problem is missing");
+        }
 
-          //video ka url bhi send krdo
+        const video = await SolutionVideo.findOne({
+            problemId: id
+        });
 
-        const videos=await SolutionVideo.find({problemId:id}) ;
-
-        if(videos){   
-    
         const responseData = {
             ...getProblem.toObject(),
-            secureUrl:videos.secureUrl,
-            thumbnailUrl : videos.thumbnailUrl,
-            duration : videos.duration,
-        } 
+            secureUrl: video?.secureUrl || null,
+            thumbnailUrl: video?.thumbnailUrl || null,
+            duration: video?.duration || 0
+        };
 
-        return res.status(200).send(responseData);
-}
+        return res.status(200).json(responseData);
+
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send(err.message);
     }
-
-    catch(err){
-        res.status(500).send("Error:"+err);
-    }
-
-}
+};
 
 const getAllProblem=async (req,res)=>{
 
