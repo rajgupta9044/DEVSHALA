@@ -81,7 +81,7 @@ return (
 
       <p className="text-gray-500 mt-2">
         Review all of your submissions for this problem.
-      </p>,
+      </p>
     </div>
 
 <div className="flex items-center gap-3">
