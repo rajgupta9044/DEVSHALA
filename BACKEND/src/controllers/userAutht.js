@@ -25,7 +25,12 @@ const register=async(req,res)=>{
 
         const token=jwt.sign({_id:user._id,emailId:emailId,role:'user'},process.env.JWT_SECRET,{expiresIn:60*60});
 
-        res.cookie('token',token,{maxAge:60*60*1000});
+        res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 60 * 60 * 1000,
+});
 
           const reply ={
             firstName:user.firstName,
@@ -75,7 +80,12 @@ const login=async(req,res)=>{
 
         const token=jwt.sign({_id:user._id,emailId:emailId,role:user.role},process.env.JWT_SECRET,{expiresIn:60*60});
 
-        res.cookie('token',token,{maxAge:60*60*1000});
+        res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 60 * 60 * 1000,
+});
         // res.status(200).send("Logged in Successfully");
 
 
@@ -120,7 +130,12 @@ const logout=async(req,res)=>{
 
 
         //CLEAR THE COOKIES
-        res.cookie('token',null,{expires:new Date(Date.now())});
+        res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+    
         res.send("logged Out Successfully");
 
     }
@@ -150,7 +165,12 @@ const adminRegister=async(req,res)=>{
 
         const token=jwt.sign({_id:user._id,emailId:emailId,role:user.role},process.env.JWT_SECRET,{expiresIn:60*60});
 
-        res.cookie('token',token,{maxAge:60*60*1000});
+        res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 60 * 60 * 1000,
+});
         
         res.status(201).send("Registered Successully");
 
